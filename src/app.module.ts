@@ -2,12 +2,9 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AppConfigModule } from './config/config.module';
-import { ProductsModule } from './modules/products/products.module';
-import { UsersModule } from './modules/users/users.module';
-import { OrdersModule } from './modules/orders/orders.module';
-import { AuthModule } from './modules/auth/auth.module';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
+import { ModulesModule } from './modules/modules.module';
 
 @Module({
   imports: [
@@ -29,10 +26,7 @@ import { APP_GUARD } from '@nestjs/core';
       },
     ]),
     AppConfigModule,
-    ProductsModule,
-    UsersModule,
-    OrdersModule,
-    AuthModule,
+    ModulesModule,
   ],
   controllers: [AppController],
   providers: [
