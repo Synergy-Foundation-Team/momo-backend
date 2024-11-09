@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { VersioningType, Logger } from '@nestjs/common';
+import { setupSwagger } from './config/swagger/swagger.config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -11,9 +12,25 @@ async function bootstrap() {
     type: VersioningType.URI,
   });
 
+  app.enableCors({
+    origin: [
+      'http://localhost:3000',
+      'http://localhost:8000',
+      'http://localhost:3001',
+      'http://localhost:8080',
+    ],
+    methods: 'GET,POST,PUT,DELETE',
+    allowedHeaders: 'Content-Type, Authorization',
+    credentials: true,
+    preflightContinue: false,
+    optionsSuccessStatus: 204,
+  });
+
+  setupSwagger(app);
+
   await app.listen(process.env.PORT);
   Logger.log(
-    `Server running on http://localhost:${process.env.PORT}`,
+    `Server running on http://localhost:${process.env.PORT}/api`,
     'Bootstrap',
   );
 }
