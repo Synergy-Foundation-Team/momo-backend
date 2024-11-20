@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { VersioningType, Logger } from '@nestjs/common';
+import { VersioningType, Logger, ValidationPipe } from '@nestjs/common';
 import { setupSwagger } from './config/swagger/swagger.config';
 
 async function bootstrap() {
@@ -11,6 +11,11 @@ async function bootstrap() {
   app.enableVersioning({
     type: VersioningType.URI,
   });
+
+  app.useGlobalPipes(new ValidationPipe({
+    whitelist: true,
+    transform: true,
+  }));
 
   app.enableCors({
     origin: [
