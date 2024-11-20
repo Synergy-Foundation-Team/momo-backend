@@ -1,53 +1,76 @@
-import { Injectable } from '@nestjs/common';
-
-export interface User {
-  id: number;
-  username: string;
-  password: string;
-  email: string;
-  points: number;
-  profile: {
-    fullName: string;
-    phoneNumber: string;
-    address: string;
-  };
-}
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { User, CreateUserDto, UserResponse, UpdateProfileDto } from './interfaces/user.interface';
 
 @Injectable()
 export class UsersService {
-  private readonly users: User[] = [
-    {
-      id: 1,
-      username: 'admin',
-      password: 'admin123456',
-      email: 'admin@example.com',
-      points: 1000,
-      profile: {
-        fullName: 'Admin User',
-        phoneNumber: '+66123456789',
-        address: 'Bangkok, Thailand',
-      },
-    },
-  ];
+  private users: User[] = [];
+  private currentId = 1;
 
   async findByUsername(username: string): Promise<User | undefined> {
     return this.users.find(user => user.username === username);
   }
 
-  async findById(id: number): Promise<User | undefined> {
-    return this.users.find(user => user.id === id);
+  async findById(id: number): Promise<UserResponse | undefined> {
+    const user = this.users.find(user => user.id === id);
+    if (!user) {
+      throw new NotFoundException(`User with ID ${id} not found`);
+    }
+    
+    const { password, ...userWithoutPassword } = user;
+    return userWithoutPassword;
+  }
+
+  async create(createUserDto: CreateUserDto): Promise<User> {
+    const newUser: User = {
+      id: this.currentId++,
+      ...createUserDto,
+      points: 0, // Initialize with 0 points
+      profile: {
+        fullName: '',
+        phoneNumber: '',
+        address: ''
+      },
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+
+    this.users.push(newUser);
+    return newUser;
+  }
+
+  async findByEmail(email: string): Promise<User | undefined> {
+    return this.users.find(user => user.email === email);
   }
 
   async getUserPoints(id: number): Promise<number> {
     const user = await this.findById(id);
-    return user?.points || 0;
+    return user.points;
   }
 
-  async getUserProfile(id: number): Promise<Omit<User, 'password'> | undefined> {
-    const user = await this.findById(id);
-    if (!user) return undefined;
-    
-    const { password, ...userWithoutPassword } = user;
-    return userWithoutPassword;
+  async updatePoints(id: number, points: number): Promise<number> {
+    const user = this.users.find(user => user.id === id);
+    if (!user) {
+      throw new NotFoundException(`User with ID ${id} not found`);
+    }
+    user.points = points;
+    user.updatedAt = new Date();
+    return user.points;
+  }
+
+  async getUserProfile(id: number): Promise<UserResponse> {
+    return this.findById(id);
+  }
+
+  async updateProfile(id: number, profileData: UpdateProfileDto): Promise<UserResponse> {
+    const user = this.users.find(user => user.id === id);
+    if (!user) {
+      throw new NotFoundException(`User with ID ${id} not found`);
+    }
+
+    user.profile = profileData;
+    user.updatedAt = new Date();
+
+    const { password, ...result } = user;
+    return result;
   }
 }

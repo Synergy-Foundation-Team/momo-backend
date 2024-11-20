@@ -4,7 +4,13 @@ import { LocalAuthGuard } from './guards/local-auth.guard';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+import { 
+  ApiTags, 
+  ApiOperation, 
+  ApiResponse, 
+  ApiBearerAuth,
+  ApiUnauthorizedResponse 
+} from '@nestjs/swagger';
 
 @ApiTags('Authentication')
 @Controller('auth')
@@ -44,12 +50,13 @@ export class AuthController {
       }
     }
   })
+  @UseGuards(LocalAuthGuard)
   @Post('login')
   async login(@Body() loginDto: LoginDto) {
     return this.authService.login(loginDto);
   }
 
-
+  @ApiBearerAuth('JWT-auth')
   @ApiOperation({ summary: 'Get authenticated user profile' })
   @ApiResponse({ 
     status: 200,
@@ -65,10 +72,13 @@ export class AuthController {
       }
     }
   })
-  @ApiBearerAuth()
+  @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @UseGuards(JwtAuthGuard)
   @Get('profile')
   getProfile(@Request() req) {
-    return req.user;
+    return {
+      success: true,
+      data: req.user
+    };
   }
 }
