@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException, ConflictException } from '@nestjs/common';
+import {
+  Injectable,
+  UnauthorizedException,
+  ConflictException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
 import { RegisterDto } from './dto/register.dto';
@@ -14,7 +18,7 @@ export class AuthService {
 
   async validateUser(username: string, password: string): Promise<any> {
     const user = await this.usersService.findByUsername(username);
-    if (user && await bcrypt.compare(password, user.password)) {
+    if (user && (await bcrypt.compare(password, user.password))) {
       const { password, ...result } = user;
       return result;
     }
@@ -23,13 +27,17 @@ export class AuthService {
 
   async register(registerDto: RegisterDto) {
     // Check if username already exists
-    const existingUsername = await this.usersService.findByUsername(registerDto.username);
+    const existingUsername = await this.usersService.findByUsername(
+      registerDto.username,
+    );
     if (existingUsername) {
       throw new ConflictException('Username already exists');
     }
 
     // Check if email already exists
-    const existingEmail = await this.usersService.findByEmail(registerDto.email);
+    const existingEmail = await this.usersService.findByEmail(
+      registerDto.email,
+    );
     if (existingEmail) {
       throw new ConflictException('Email already exists');
     }
@@ -41,7 +49,7 @@ export class AuthService {
       email: registerDto.email,
       password: hashedPassword,
     });
-    
+
     const { password, ...result } = user;
     return {
       success: true,
@@ -55,10 +63,10 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    const payload = { 
-      sub: user.id, 
+    const payload = {
+      sub: user.id,
       username: user.username,
-      email: user.email
+      email: user.email,
     };
 
     return {
@@ -69,8 +77,8 @@ export class AuthService {
           id: user.id,
           username: user.username,
           email: user.email,
-        }
-      }
+        },
+      },
     };
   }
 }

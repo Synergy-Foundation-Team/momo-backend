@@ -9,9 +9,9 @@ export function setupSwagger(app: INestApplication): void {
     .addTag('Authentication', 'Authentication related endpoints')
     .addTag('Users', 'User management endpoints')
     .addBearerAuth(
-      { 
-        type: 'http', 
-        scheme: 'bearer', 
+      {
+        type: 'http',
+        scheme: 'bearer',
         bearerFormat: 'JWT',
         name: 'JWT',
         description: 'Enter JWT token',

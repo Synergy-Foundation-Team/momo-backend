@@ -1,15 +1,22 @@
-import { Controller, Post, Body, UseGuards, Get, Request } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  UseGuards,
+  Get,
+  Request,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
-import { 
-  ApiTags, 
-  ApiOperation, 
-  ApiResponse, 
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
   ApiBearerAuth,
-  ApiUnauthorizedResponse 
+  ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 
 @ApiTags('Authentication')
@@ -18,8 +25,8 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @ApiOperation({ summary: 'Register new user' })
-  @ApiResponse({ 
-    status: 201, 
+  @ApiResponse({
+    status: 201,
     description: 'User successfully registered',
     schema: {
       example: {
@@ -27,10 +34,10 @@ export class AuthController {
         data: {
           id: 1,
           username: 'newuser',
-          email: 'newuser@example.com'
-        }
-      }
-    }
+          email: 'newuser@example.com',
+        },
+      },
+    },
   })
   @Post('register')
   async register(@Body() registerDto: RegisterDto) {
@@ -38,17 +45,17 @@ export class AuthController {
   }
 
   @ApiOperation({ summary: 'Login user' })
-  @ApiResponse({ 
-    status: 200, 
+  @ApiResponse({
+    status: 200,
     description: 'User successfully logged in',
     schema: {
       example: {
         success: true,
         data: {
-          access_token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
-        }
-      }
-    }
+          access_token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
+        },
+      },
+    },
   })
   @UseGuards(LocalAuthGuard)
   @Post('login')
@@ -58,7 +65,7 @@ export class AuthController {
 
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({ summary: 'Get authenticated user profile' })
-  @ApiResponse({ 
+  @ApiResponse({
     status: 200,
     description: 'Returns the authenticated user profile',
     schema: {
@@ -67,10 +74,10 @@ export class AuthController {
         data: {
           id: 1,
           username: 'admin',
-          email: 'admin@example.com'
-        }
-      }
-    }
+          email: 'admin@example.com',
+        },
+      },
+    },
   })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @UseGuards(JwtAuthGuard)
@@ -78,7 +85,7 @@ export class AuthController {
   getProfile(@Request() req) {
     return {
       success: true,
-      data: req.user
+      data: req.user,
     };
   }
 }

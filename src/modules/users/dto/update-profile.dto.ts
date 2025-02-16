@@ -4,7 +4,7 @@ import { ApiProperty } from '@nestjs/swagger';
 export class UpdateProfileDto {
   @ApiProperty({
     example: 'John Doe',
-    description: 'Full name of the user'
+    description: 'Full name of the user',
   })
   @IsString()
   @IsNotEmpty()
@@ -12,7 +12,7 @@ export class UpdateProfileDto {
 
   @ApiProperty({
     example: '+66123456789',
-    description: 'Phone number'
+    description: 'Phone number',
   })
   @IsString()
   @IsNotEmpty()
@@ -20,7 +20,7 @@ export class UpdateProfileDto {
 
   @ApiProperty({
     example: 'Bangkok, Thailand',
-    description: 'Address'
+    description: 'Address',
   })
   @IsString()
   @IsNotEmpty()

@@ -1,5 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { User, CreateUserDto, UserResponse, UpdateProfileDto } from './interfaces/user.interface';
+import {
+  User,
+  CreateUserDto,
+  UserResponse,
+  UpdateProfileDto,
+} from './interfaces/user.interface';
 
 @Injectable()
 export class UsersService {
@@ -7,15 +12,15 @@ export class UsersService {
   private currentId = 1;
 
   async findByUsername(username: string): Promise<User | undefined> {
-    return this.users.find(user => user.username === username);
+    return this.users.find((user) => user.username === username);
   }
 
   async findById(id: number): Promise<UserResponse | undefined> {
-    const user = this.users.find(user => user.id === id);
+    const user = this.users.find((user) => user.id === id);
     if (!user) {
       throw new NotFoundException(`User with ID ${id} not found`);
     }
-    
+
     const { password, ...userWithoutPassword } = user;
     return userWithoutPassword;
   }
@@ -28,7 +33,7 @@ export class UsersService {
       profile: {
         fullName: '',
         phoneNumber: '',
-        address: ''
+        address: '',
       },
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -39,7 +44,7 @@ export class UsersService {
   }
 
   async findByEmail(email: string): Promise<User | undefined> {
-    return this.users.find(user => user.email === email);
+    return this.users.find((user) => user.email === email);
   }
 
   async getUserPoints(id: number): Promise<number> {
@@ -48,7 +53,7 @@ export class UsersService {
   }
 
   async updatePoints(id: number, points: number): Promise<number> {
-    const user = this.users.find(user => user.id === id);
+    const user = this.users.find((user) => user.id === id);
     if (!user) {
       throw new NotFoundException(`User with ID ${id} not found`);
     }
@@ -61,8 +66,11 @@ export class UsersService {
     return this.findById(id);
   }
 
-  async updateProfile(id: number, profileData: UpdateProfileDto): Promise<UserResponse> {
-    const user = this.users.find(user => user.id === id);
+  async updateProfile(
+    id: number,
+    profileData: UpdateProfileDto,
+  ): Promise<UserResponse> {
+    const user = this.users.find((user) => user.id === id);
     if (!user) {
       throw new NotFoundException(`User with ID ${id} not found`);
     }

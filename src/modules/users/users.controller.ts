@@ -1,7 +1,22 @@
-import { Controller, Get, Put, Param, Body, UseGuards, NotFoundException } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Put,
+  Param,
+  Body,
+  UseGuards,
+  NotFoundException,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiParam, ApiBody } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBearerAuth,
+  ApiParam,
+  ApiBody,
+} from '@nestjs/swagger';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 
 @ApiTags('Users')
@@ -12,7 +27,7 @@ export class UsersController {
 
   @ApiOperation({ summary: 'Get user by ID' })
   @ApiParam({ name: 'id', description: 'User ID', example: 1 })
-  @ApiResponse({ 
+  @ApiResponse({
     status: 200,
     description: 'Returns the user information',
     schema: {
@@ -26,17 +41,17 @@ export class UsersController {
           profile: {
             fullName: 'John Doe',
             phoneNumber: '+66123456789',
-            address: 'Bangkok, Thailand'
+            address: 'Bangkok, Thailand',
           },
           createdAt: '2023-11-15T12:00:00.000Z',
-          updatedAt: '2023-11-15T12:00:00.000Z'
-        }
-      }
-    }
+          updatedAt: '2023-11-15T12:00:00.000Z',
+        },
+      },
+    },
   })
-  @ApiResponse({ 
+  @ApiResponse({
     status: 404,
-    description: 'User not found'
+    description: 'User not found',
   })
   @UseGuards(JwtAuthGuard)
   @Get(':id')
@@ -45,30 +60,30 @@ export class UsersController {
     if (!user) {
       throw new NotFoundException(`User with ID ${id} not found`);
     }
-    
+
     return {
       success: true,
-      data: user
+      data: user,
     };
   }
 
   @ApiOperation({ summary: 'Get user points' })
   @ApiParam({ name: 'id', description: 'User ID', example: 1 })
-  @ApiResponse({ 
+  @ApiResponse({
     status: 200,
     description: 'Returns the user points',
     schema: {
       example: {
         success: true,
         data: {
-          points: 1000
-        }
-      }
-    }
+          points: 1000,
+        },
+      },
+    },
   })
-  @ApiResponse({ 
+  @ApiResponse({
     status: 404,
-    description: 'User not found'
+    description: 'User not found',
   })
   @UseGuards(JwtAuthGuard)
   @Get(':id/points')
@@ -77,14 +92,14 @@ export class UsersController {
     return {
       success: true,
       data: {
-        points
-      }
+        points,
+      },
     };
   }
 
   @ApiOperation({ summary: 'Get user profile' })
   @ApiParam({ name: 'id', description: 'User ID', example: 1 })
-  @ApiResponse({ 
+  @ApiResponse({
     status: 200,
     description: 'Returns the user profile',
     schema: {
@@ -98,15 +113,15 @@ export class UsersController {
           profile: {
             fullName: 'John Doe',
             phoneNumber: '+66123456789',
-            address: 'Bangkok, Thailand'
-          }
-        }
-      }
-    }
+            address: 'Bangkok, Thailand',
+          },
+        },
+      },
+    },
   })
-  @ApiResponse({ 
+  @ApiResponse({
     status: 404,
-    description: 'User not found'
+    description: 'User not found',
   })
   @UseGuards(JwtAuthGuard)
   @Get(':id/profile')
@@ -114,14 +129,14 @@ export class UsersController {
     const profile = await this.usersService.getUserProfile(Number(id));
     return {
       success: true,
-      data: profile
+      data: profile,
     };
   }
 
   @ApiOperation({ summary: 'Update user profile' })
   @ApiParam({ name: 'id', description: 'User ID', example: 1 })
   @ApiBody({ type: UpdateProfileDto })
-  @ApiResponse({ 
+  @ApiResponse({
     status: 200,
     description: 'Returns the updated user profile',
     schema: {
@@ -135,23 +150,29 @@ export class UsersController {
           profile: {
             fullName: 'John Doe',
             phoneNumber: '+66123456789',
-            address: 'Bangkok, Thailand'
-          }
-        }
-      }
-    }
+            address: 'Bangkok, Thailand',
+          },
+        },
+      },
+    },
   })
-  @ApiResponse({ 
+  @ApiResponse({
     status: 404,
-    description: 'User not found'
+    description: 'User not found',
   })
   @UseGuards(JwtAuthGuard)
   @Put(':id/profile')
-  async updateProfile(@Param('id') id: string, @Body() profileData: UpdateProfileDto) {
-    const updatedUser = await this.usersService.updateProfile(Number(id), profileData);
+  async updateProfile(
+    @Param('id') id: string,
+    @Body() profileData: UpdateProfileDto,
+  ) {
+    const updatedUser = await this.usersService.updateProfile(
+      Number(id),
+      profileData,
+    );
     return {
       success: true,
-      data: updatedUser
+      data: updatedUser,
     };
   }
 }

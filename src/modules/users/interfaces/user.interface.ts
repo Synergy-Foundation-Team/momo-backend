@@ -15,6 +15,9 @@ export interface User {
   updatedAt?: Date;
 }
 
-export type CreateUserDto = Omit<User, 'id' | 'createdAt' | 'updatedAt' | 'points' | 'profile'>;
+export type CreateUserDto = Omit<
+  User,
+  'id' | 'createdAt' | 'updatedAt' | 'points' | 'profile'
+>;
 export type UserResponse = Omit<User, 'password'>;
 export type UpdateProfileDto = UserProfile;
