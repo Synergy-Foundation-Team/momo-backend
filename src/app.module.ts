@@ -5,7 +5,8 @@ import { AppConfigModule } from './config/config.module';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import { ModulesModule } from './modules/modules.module';
-import { ConfigModule } from '@nestjs/config';
+import { PaymentModule } from './external-services/payment/payment.module';
+import { InventoryModule } from './external-services/inventory/inventory.module';
 
 @Module({
   imports: [
@@ -15,6 +16,8 @@ import { ConfigModule } from '@nestjs/config';
     }),
     AppConfigModule,
     ModulesModule,
+    PaymentModule,
+    InventoryModule,
   ],
   controllers: [AppController],
   providers: [
