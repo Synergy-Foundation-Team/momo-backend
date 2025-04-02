@@ -20,6 +20,7 @@ export class PaymentService {
 
   async createPayment(paymentData: PaymentRequest): Promise<PaymentResponse> {
     try {
+      this.logger.debug(`Creating payment for order ${paymentData.orderId}`);
       return await this.httpClient.post<PaymentResponse>(
         `${this.baseUrl}/payments`,
         paymentData,
@@ -30,13 +31,19 @@ export class PaymentService {
         },
       );
     } catch (error) {
-      // Handle specific error cases
+      this.logger.error(
+        `Failed to create payment for order ${paymentData.orderId}`,
+        error.response?.data || error.message,
+      );
       throw error;
     }
   }
 
   async getPaymentStatus(transactionId: string): Promise<PaymentResponse> {
     try {
+      this.logger.debug(
+        `Getting payment status for transaction ${transactionId}`,
+      );
       return await this.httpClient.get<PaymentResponse>(
         `${this.baseUrl}/payments/${transactionId}`,
         {
@@ -46,7 +53,10 @@ export class PaymentService {
         },
       );
     } catch (error) {
-      // Handle specific error cases
+      this.logger.error(
+        `Failed to get payment status for transaction ${transactionId}`,
+        error.response?.data || error.message,
+      );
       throw error;
     }
   }
